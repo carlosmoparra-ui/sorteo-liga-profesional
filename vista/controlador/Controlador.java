@@ -1,12 +1,10 @@
 
 package controlador;
 
-import modelo.Modelo;
-import modelo.NumeroEquiposInvalidoException;
-import modelo.SorteoInvalidoException;
+import modelo.*;
 import vista.Vista;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class Controlador {
 
@@ -20,38 +18,40 @@ public class Controlador {
 
     public void iniciar() {
 
-        vista.mostrarInicio();
-
         try {
-            ArrayList<String> resultados =
-                modelo.realizarSorteo();
+            vista.mostrarMensaje("INICIANDO SORTEO DE LIGA PROFESIONAL");
+
+            ArrayList<String> resultados = modelo.realizarSorteo();
 
             vista.mostrarResultados(resultados);
 
             modelo.guardar();
 
             vista.mostrarMensaje(
-                "Torneo guardado correctamente."
+                "\nTorneo guardado correctamente en torneo.ser"
             );
 
             modelo.cargar();
 
             vista.mostrarMensaje(
-                "Torneo cargado correctamente."
+                "Torneo cargado correctamente"
             );
 
-        } catch (
-            NumeroEquiposInvalidoException |
-            SorteoInvalidoException |
-            IOException e
-        ) {
-            vista.mostrarMensaje(
-                "Error: " + e.getMessage()
+        } catch (NumeroEquiposInvalidoException |
+                 SorteoInvalidoException e) {
+
+            vista.mostrarError(e.getMessage());
+
+        } catch (IOException e) {
+
+            vista.mostrarError(
+                "Error al guardar o cargar el torneo: " + e.getMessage()
             );
 
         } catch (ClassNotFoundException e) {
-            vista.mostrarMensaje(
-                "Error al cargar el torneo."
+
+            vista.mostrarError(
+                "No se encontro la clase del torneo"
             );
         }
     }
